@@ -2,11 +2,11 @@
 
 pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TokenTimelock is Ownable {
-  ERC20 public token;
+  IERC20 public token;
   uint public ENTRY_PRICE = 0.1 ether;
   uint public AMOUNT_PER_UNLOCK = 10 ether;
   uint public UNLOCK_COUNT = 3;
@@ -19,9 +19,9 @@ contract TokenTimelock is Ownable {
   {
     token = ERC20(0x0000000000000000000000000000000000000000);
 
-    unlock_time[0] = 1642052293;
-    unlock_time[1] = 1642052293;
-    unlock_time[2] = 1642052293;
+    unlock_time[0] = block.timestamp + 1 days;
+    unlock_time[1] = block.timestamp + 20 days;
+    unlock_time[2] = block.timestamp + 40 days;
   }
 
   function claim(uint8 unlock_number) public {
