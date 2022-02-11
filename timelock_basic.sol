@@ -2,14 +2,15 @@
 
 pragma solidity 0.8.11;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract TokenTimelock is Ownable {
+  using SafeERC20 for IERC20;
   IERC20 public token;
-  uint public ENTRY_PRICE = 0.1 ether;
-  uint public AMOUNT_PER_UNLOCK = 10 ether;
-  uint public UNLOCK_COUNT = 3;
+  uint public immutable ENTRY_PRICE = 0.1 ether;
+  uint public immutable AMOUNT_PER_UNLOCK = 10 ether;
+  uint public immutable UNLOCK_COUNT = 3;
 
   mapping(uint8 => uint256) public unlock_time;
   mapping(address => bool) public is_beneficiary;
@@ -17,7 +18,7 @@ contract TokenTimelock is Ownable {
 
   constructor()
   {
-    token = ERC20(0x0000000000000000000000000000000000000000);
+    token = IERC20(0x0000000000000000000000000000000000000000);
 
     unlock_time[0] = block.timestamp + 1 days;
     unlock_time[1] = block.timestamp + 20 days;
@@ -32,7 +33,7 @@ contract TokenTimelock is Ownable {
 
     beneficiary_has_claimed[msg.sender][unlock_number] = true;
 
-    token.transfer(msg.sender, AMOUNT_PER_UNLOCK);
+    token.safeTransferFrom(address(this),msg.sender, AMOUNT_PER_UNLOCK);
   }
 
   function buy() public payable
