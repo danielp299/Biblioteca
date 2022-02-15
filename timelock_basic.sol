@@ -14,7 +14,7 @@ contract TokenTimelock is Ownable {
 
   mapping(uint8 => uint256) public unlock_time;
   mapping(address => bool) public is_beneficiary;
-  mapping(address => mapping(uint => bool)) public beneficiary_has_claimed;
+  mapping(address => mapping(uint256 => bool)) public beneficiary_has_claimed;
 
   constructor()
   {
